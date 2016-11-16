@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.1.0
+
+* Add a `DeprecationWarning` when using a `DateCol` with no `default`, but keep the default date to 1970-01-01.
+* Enforce `DateCol.default` to be a `date`.
+
+## 3.0.3
+
+* Fix `cerfa_field` validation in `Column`, `Formula` and `AbstractConversionVariable`.
+  Previously, some variables having `cerfa_field` as a `dict` were converted to `unicode` by mistake.
+  See https://github.com/openfisca/openfisca-france/issues/543
+
+## 3.0.2
+
+* Move `calmar.py` to [OpenFisca-Survey-Manager](https://github.com/openfisca/openfisca-survey-manager).
+
+  No incidence on users since it was only needed for dataframes.
+
 ## 3.0.1
 
 * Adapt requested_period_last_value and last_duration_last_value to extra params

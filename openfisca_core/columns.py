@@ -4,6 +4,7 @@
 import collections
 import datetime
 import re
+import warnings
 
 from biryani import strings
 import numpy as np
@@ -45,6 +46,7 @@ class Column(object):
             is_permanent = False, label = None, law_reference = None, start = None, survey_only = False, url = None,
             val_type = None):
         if cerfa_field is not None:
+            assert isinstance(cerfa_field, (basestring, dict)), cerfa_field
             self.cerfa_field = cerfa_field
         if default is not None and default != self.default:
             self.default = default
@@ -217,6 +219,14 @@ class DateCol(Column):
     json_type = 'Date'
     val_type = 'date'
 
+    def __init__(self, default = None, **kwargs):
+        super(DateCol, self).__init__(**kwargs)
+        if default is None:
+            warnings.warn('DateCol.default not given, using 1970-01-01', DeprecationWarning)
+            default = datetime.date.fromtimestamp(0)  # 0 == 1970-01-01
+        assert isinstance(default, datetime.date), default
+        self.default = default
+
     @property
     def input_to_dated_python(self):
         return conv.pipe(
@@ -226,7 +236,7 @@ class DateCol(Column):
             )
 
     def json_default(self):
-        return unicode(np.array(self.default, self.dtype))  # 0 = 1970-01-01
+        return unicode(np.array(self.default, self.dtype))
 
     @property
     def json_to_dated_python(self):
